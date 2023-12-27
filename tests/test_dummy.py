@@ -1,6 +1,10 @@
+import logging
+
 import pytest
 
 from parma_mining.crunchbase import __version__
+
+logger = logging.getLogger(__name__)
 
 
 @pytest.mark.parametrize("arg", [True, False])
