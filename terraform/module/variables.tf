@@ -13,8 +13,7 @@ variable "region" {
   type        = string
 }
 
-variable "FIREBASE_ADMIN_SDK" {
+variable "ANALYTICS_BASE_URL" {
   description = "value"
   type        = string
-  sensitive   = true
 }
