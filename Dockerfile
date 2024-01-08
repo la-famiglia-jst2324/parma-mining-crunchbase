@@ -11,6 +11,7 @@ COPY --chown=$MAMBA_USER:$MAMBA_USER parma_mining /app/parma_mining
 
 ENV ANALYTICS_BASE_URL=$ANALYTICS_BASE_URL
 
+
 EXPOSE 8080
 
 ENTRYPOINT ["/usr/local/bin/_entrypoint.sh"]
