@@ -12,6 +12,8 @@ dependencies:
   - setuptools >=61 # pyproject.toml support
   # Development
   - types-pyyaml
+  # add apify_client
+  - apify_client
   # Testing
   - pytest >=6 # --import-mode option
   - pytest-cov

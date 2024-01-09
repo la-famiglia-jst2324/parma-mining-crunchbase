@@ -4,11 +4,12 @@ This module communicates with the Apify and Google to discover and scrape
 """
 import os
 
+from apify_client import ApifyClient
 from dotenv import load_dotenv
 from fastapi import HTTPException, status
 from googlesearch import search
 
-from parma_mining.crunchbase.model import DiscoveryModel
+from parma_mining.crunchbase.model import CompanyModel, DiscoveryModel
 
 
 class CrunchbaseClient:
@@ -51,3 +52,31 @@ class CrunchbaseClient:
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail="Error searching organizations",
             )
+
+    def get_company_details(self, urls: list[str]) -> list[CompanyModel]:
+        """Scrape a company for details."""
+        # Initialize the ApifyClient with your API token
+        client = ApifyClient(self.key)
+        print(urls)
+
+        # Prepare the Actor input
+        run_input = {
+            "action": "scrapeCompanyUrls",
+            "cursor": "",
+            "minDelay": 1,
+            "maxDelay": 3,
+            "scrapeCompanyUrls.urls": urls,
+            "proxy": {
+                "useApifyProxy": True,
+                "apifyProxyGroups": ["RESIDENTIAL"],
+            },
+        }
+
+        # Run the Actor and wait for it to finish
+        run = client.actor(self.actor_id).call(run_input=run_input)
+
+        # Get output of the Actor run
+        for item in client.dataset(run["defaultDatasetId"]).iterate_items():
+            pass
+        # cannot continue right now, will be able when we have access to Apify actor
+        return []
