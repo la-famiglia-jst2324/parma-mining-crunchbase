@@ -23,6 +23,8 @@ def client():
 
 logger = logging.getLogger(__name__)
 
+logger = logging.getLogger(__name__)
+
 
 @pytest.mark.parametrize("arg", [True, False])
 def test_dummy(arg: bool):
