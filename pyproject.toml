@@ -43,7 +43,7 @@ line-length = 88
 select = ["F", "E", "W", "I", "N", "UP", "D", "PL"]
 target-version = "py311"
 ignore = [
-  "D107", # disable missing docstring errors for __init__ files
+    "D107", # disable missing docstring errors for __init__ files
 ]
 
 [tool.ruff.pydocstyle]
