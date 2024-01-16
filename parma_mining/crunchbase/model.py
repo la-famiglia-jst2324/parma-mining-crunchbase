@@ -1,4 +1,5 @@
 """Model for the Crunchbase data."""
+import json
 from datetime import datetime
 
 from pydantic import BaseModel
@@ -199,12 +200,32 @@ class CompanyModel(BaseModel):
     growth_insight: str | None
     sifter_num_products: int | None
 
+    def updated_model_dump(self) -> str:
+        """Dump the CompanyModel instance to a JSON string."""
+        # Convert datetime objects to string representation
+        json_serializable_dict = self.model_dump()
+        # nested fields will be added
+        return json.dumps(json_serializable_dict, default=str)
 
-class DiscoveryModel(BaseModel):
-    """Discovery model for Crunchbase data."""
 
-    name: str | None
-    url: str | None
+class DiscoveryRequest(BaseModel):
+    """Request model for the discovery endpoint."""
+
+    company_id: str
+    name: str
+
+
+class DiscoveryResponse(BaseModel):
+    """Define the output model for the discovery endpoint."""
+
+    handles: list[str] = []
+
+
+class FinalDiscoveryResponse(BaseModel):
+    """Define the final discovery response model."""
+
+    identifiers: dict[str, DiscoveryResponse]
+    validity: datetime
 
 
 class CompaniesRequest(BaseModel):
@@ -219,3 +240,17 @@ class ResponseModel(BaseModel):
     source_name: str
     company_id: str
     raw_data: CompanyModel
+
+
+class ErrorInfoModel(BaseModel):
+    """Error info for the crawling_finished endpoint."""
+
+    error_type: str
+    error_description: str | None
+
+
+class CrawlingFinishedInputModel(BaseModel):
+    """Internal base model for the crawling_finished endpoints."""
+
+    task_id: int
+    errors: dict[str, ErrorInfoModel] | None = None

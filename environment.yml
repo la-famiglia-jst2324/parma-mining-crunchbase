@@ -12,8 +12,10 @@ dependencies:
   - setuptools >=61 # pyproject.toml support
   # Development
   - types-pyyaml
-  # add apify_client
-  - apify_client
+  - python-dotenv>=1.0.0
+  - pip:
+      - apify-client
+      - googlesearch-python
   # Testing
   - pytest >=6 # --import-mode option
   - pytest-cov

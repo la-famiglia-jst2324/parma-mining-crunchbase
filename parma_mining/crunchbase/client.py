@@ -2,14 +2,20 @@
 
 This module communicates with the Apify and Google to discover and scrape
 """
+import logging
 import os
 
 from apify_client import ApifyClient
 from dotenv import load_dotenv
-from fastapi import HTTPException, status
 from googlesearch import search
 
-from parma_mining.crunchbase.model import CompanyModel, DiscoveryModel
+from parma_mining.crunchbase.model import (
+    CompanyModel,
+    DiscoveryResponse,
+)
+from parma_mining.mining_common.exceptions import ClientError
+
+logger = logging.getLogger(__name__)
 
 
 class CrunchbaseClient:
@@ -21,44 +27,35 @@ class CrunchbaseClient:
         self.key = str(os.getenv("APIFY_API_KEY") or "")
         self.actor_id = str(os.getenv("APIFY_ACTOR_ID") or "")
 
-    def discover_company(self, query: str):  # -> list[DiscoveryModel]:
+    def discover_company(self, query: str) -> DiscoveryResponse:
         """Discover a company.
 
         Take name as an input and find its crunchbase url.
         """
         search_query = query + " crunchbase"
-        profile_url = ""
         preferred_slash_count = 4
+        handles = []
         try:
             for search_item in search(
                 search_query, tld="co.in", num=10, stop=10, pause=2
             ):
-                # should be like https://www.crunchbase.com/organization/company-id ,
-                # should not be more after company id
                 if (
                     search_item.count("/") == preferred_slash_count
                     and "https://www.crunchbase.com/organization/" in search_item
                 ):
-                    profile_url = search_item
-                    return [
-                        DiscoveryModel.model_validate(
-                            {"name": query, "url": profile_url}
-                        )
-                    ]
-                else:
-                    raise Exception("No Crunchbase profile url found with given query")
-        except Exception:
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Error searching organizations",
-            )
+                    handles.append(search_item)
+            if len(handles) == 0:
+                raise Exception("No Crunchbase profile url found with given query")
+            return DiscoveryResponse.model_validate({"handles": handles})
+        except Exception as e:
+            msg = f"Error searching organizations for {query}: {e}"
+            logger.error(msg)
+            raise ClientError()
 
     def get_company_details(self, urls: list[str]) -> list[CompanyModel]:
         """Scrape a company for details."""
         # Initialize the ApifyClient with your API token
         client = ApifyClient(self.key)
-        print(urls)
-
         # Prepare the Actor input
         run_input = {
             "action": "scrapeCompanyUrls",
