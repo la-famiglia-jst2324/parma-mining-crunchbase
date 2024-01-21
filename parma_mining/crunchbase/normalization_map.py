@@ -108,6 +108,124 @@ class CrunchbaseNormalizationMap:
                     },
                 ],
             },
+            {
+                "SourceField": "InvestorModel",
+                "DataType": "nested",
+                "MeasurementName": "investors",
+                "NestedMappings": [
+                    {
+                        "SourceField": "name",
+                        "DataType": "text",
+                        "MeasurementName": "investor name",
+                    },
+                    {
+                        "SourceField": "investment_title",
+                        "DataType": "text",
+                        "MeasurementName": "investment title",
+                    },
+                    {
+                        "SourceField": "permalink",
+                        "DataType": "text",
+                        "MeasurementName": "investor permalink",
+                    },
+                    {
+                        "SourceField": "partners",
+                        "DataType": "nested",
+                        "MeasurementName": "investor partners",
+                        "NestedMappings": [
+                            {
+                                "SourceField": "name",
+                                "DataType": "text",
+                                "MeasurementName": "partner name",
+                            },
+                            {
+                                "SourceField": "title",
+                                "DataType": "text",
+                                "MeasurementName": "partner title",
+                            },
+                            {
+                                "SourceField": "permalink",
+                                "DataType": "text",
+                                "MeasurementName": "partner permalink",
+                            },
+                            {
+                                "SourceField": "email",
+                                "DataType": "text",
+                                "MeasurementName": "partner email",
+                            },
+                            {
+                                "SourceField": "start_date",
+                                "DataType": "date",
+                                "MeasurementName": "partner start date",
+                            },
+                            {
+                                "SourceField": "phone",
+                                "DataType": "text",
+                                "MeasurementName": "partner phone",
+                            },
+                            {
+                                "SourceField": "linkedin",
+                                "DataType": "text",
+                                "MeasurementName": "partner linkedin",
+                            },
+                        ],
+                    },
+                ],
+            },
+            {
+                "SourceField": "FundingRoundModel",
+                "DataType": "nested",
+                "MeasurementName": "funding rounds",
+                "NestedMappings": [
+                    {
+                        "SourceField": "name",
+                        "DataType": "text",
+                        "MeasurementName": "funding round name",
+                    },
+                    {
+                        "SourceField": "permalink",
+                        "DataType": "text",
+                        "MeasurementName": "funding round permalink",
+                    },
+                    {
+                        "SourceField": "announced_on",
+                        "DataType": "date",
+                        "MeasurementName": "funding round announced on",
+                    },
+                    {
+                        "SourceField": "money_raised_usd",
+                        "DataType": "int",
+                        "MeasurementName": "funding round money raised (USD)",
+                    },
+                    {
+                        "SourceField": "num_investors",
+                        "DataType": "int",
+                        "MeasurementName": "funding round number of investors",
+                    },
+                    {
+                        "SourceField": "lead_investors",
+                        "DataType": "nested",
+                        "MeasurementName": "funding round lead investors",
+                        "NestedMappings": [
+                            {
+                                "SourceField": "name",
+                                "DataType": "text",
+                                "MeasurementName": "lead investor name",
+                            },
+                            {
+                                "SourceField": "investment_title",
+                                "DataType": "text",
+                                "MeasurementName": "lead investor investment title",
+                            },
+                            {
+                                "SourceField": "permalink",
+                                "DataType": "text",
+                                "MeasurementName": "lead investor permalink",
+                            },
+                        ],
+                    },
+                ],
+            },
         ],
     }
 

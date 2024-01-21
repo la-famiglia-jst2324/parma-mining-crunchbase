@@ -11,13 +11,19 @@ from parma_mining.crunchbase.api.dependencies.auth import authenticate
 from parma_mining.crunchbase.client import CrunchbaseClient
 from parma_mining.crunchbase.model import (
     CompaniesRequest,
+    CrawlingFinishedInputModel,
     DiscoveryRequest,
+    ErrorInfoModel,
     FinalDiscoveryResponse,
+    ResponseModel,
 )
 from parma_mining.crunchbase.normalization_map import CrunchbaseNormalizationMap
 from parma_mining.mining_common.exceptions import (
+    AnalyticsError,
     ClientInvalidBodyError,
+    CrawlingError,
 )
+from parma_mining.mining_common.helper import collect_errors
 
 env = os.getenv("DEPLOYMENT_ENV", "local")
 
@@ -44,23 +50,11 @@ def root():
     return {"welcome": "at parma-mining-crunchbase"}
 
 
-@app.get("/dummy-auth", status_code=status.HTTP_200_OK)
-def dummy_auth(token: str = Depends(authenticate)):
-    """Dummy endpoint.
-
-    This endpoint is used to demonstrate the usage of authenticate function. This
-    function ensures that the incoming request comes from the analytics. token variable
-    can be used to make requests to analytics.
-    """
-    logger.debug("Dummy endpoint called")
-    return {"welcome": "at parma-mining-crunchbase"}
-
-
 @app.get("/initialize", status_code=status.HTTP_200_OK)
 def initialize(source_id: int, token: str = Depends(authenticate)) -> str:
     """Initialization endpoint for the API."""
     # init frequency
-    time = "weekly"
+    time = "monthly"
     normalization_map = CrunchbaseNormalizationMap().get_normalization_map()
     # register the measurements to analytics
     analytics_client.register_measurements(
@@ -72,6 +66,18 @@ def initialize(source_id: int, token: str = Depends(authenticate)) -> str:
     results["frequency"] = time
     results["normalization_map"] = str(normalization_map)
     return json.dumps(results)
+
+
+@app.get("/dummy-auth", status_code=status.HTTP_200_OK)
+def dummy_auth(token: str = Depends(authenticate)):
+    """Dummy endpoint.
+
+    This endpoint is used to demonstrate the usage of authenticate function. This
+    function ensures that the incoming request comes from the analytics. token variable
+    can be used to make requests to analytics.
+    """
+    logger.debug("Dummy endpoint called")
+    return {"welcome": "at parma-mining-crunchbase"}
 
 
 @app.post(
@@ -106,21 +112,52 @@ def discover_companies(
     "/companies",
     status_code=status.HTTP_200_OK,
 )
-def get_company_info(companies: CompaniesRequest, token: str = Depends(authenticate)):
-    """Run the actor and fetch the data, send it to analytics."""
-    company_urls = []
-    for company in companies.companies:
-        # iterate all input items and find a crunchbase url
-        url_exist = False
-        for field in companies.companies[company]:
-            for url in companies.companies[company][field]:
-                if "crunchbase.com/" in url:
-                    url_exist = True
-                    company_urls.append(url)
-                    break
-        if not url_exist:
-            raise Exception("No Crunchbase url found for the company")
-    # launch the company scraper actor
-    crunchbase_client.get_company_details(company_urls)
+def get_company_info(body: CompaniesRequest, token: str = Depends(authenticate)):
+    """Endpoint to get detailed information about a dict of organizations."""
+    errors: dict[str, ErrorInfoModel] = {}
+    for company_id, company_data in body.companies.items():
+        for data_type, handles in company_data.items():
+            for handle in handles:
+                if data_type == "url":
+                    try:
+                        if "crunchbase.com/" in handle:
+                            org_details = crunchbase_client.get_company_details(
+                                [handle]
+                            )
+                            print(org_details)
+                        else:
+                            logger.error(f"Not a valid Crunchbase url: {handle}")
+                    except CrawlingError as e:
+                        logger.error(
+                            f"Can't fetch company details from Crunchbase Error: {e}"
+                        )
+                        collect_errors(company_id, errors, e)
+                        continue
 
-    return "done"
+                    data = ResponseModel(
+                        source_name="crunchbase",
+                        company_id=company_id,
+                        raw_data=org_details,
+                    )
+                    # Write data to db via endpoint in analytics backend
+                    try:
+                        analytics_client.feed_raw_data(token, data)
+                    except AnalyticsError as e:
+                        logger.error(
+                            f"Can't send crawling data to the Analytics. Error: {e}"
+                        )
+                        collect_errors(company_id, errors, e)
+
+                else:
+                    msg = f"Unsupported type error for {data_type} in {handle}"
+                    logger.error(msg)
+                    collect_errors(company_id, errors, ClientInvalidBodyError(msg))
+
+    return analytics_client.crawling_finished(
+        token,
+        json.loads(
+            CrawlingFinishedInputModel(
+                task_id=body.task_id, errors=errors
+            ).model_dump_json()
+        ),
+    )

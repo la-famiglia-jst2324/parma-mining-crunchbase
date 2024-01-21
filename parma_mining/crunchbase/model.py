@@ -8,197 +8,185 @@ from pydantic import BaseModel
 class AcquisitionModel(BaseModel):  # done
     """Acquisition model for Crunchbase data."""
 
-    title: str | None
-    permalink: str | None
-    price_usd: int | None
-    date: datetime | None
+    title: str | None = None
+    permalink: str | None = None
+    price_usd: int | None = None
+    date: datetime | None = None
 
 
 class AcquireeModel(BaseModel):  # done
     """Acquiree model for Crunchbase data."""
 
-    name: str
-    permalink: str | None
-    acquisition: AcquisitionModel | None
+    name: str | None = None
+    permalink: str | None = None
+    acquisition: AcquisitionModel | None = None
 
 
 class AcquirerModel(BaseModel):  # done
     """Acquirer model for Crunchbase data."""
 
-    name: str
-    permalink: str | None
-    acquisition: AcquisitionModel | None
+    name: str | None = None
+    permalink: str | None = None
+    acquisition: AcquisitionModel | None = None
 
 
 class ActivityModel(BaseModel):  # done
     """Activity model for Crunchbase data."""
 
-    title: str | None
-    activity_type: str | None
-    author: str | None
-    publisher: str | None
-    date: datetime | None
-    url: str | None
+    title: str | None = None
+    activity_type: str | None = None
+    author: str | None = None
+    publisher: str | None = None
+    date: datetime | None = None
+    url: str | None = None
 
 
 class EventModel(BaseModel):  # done
     """Event model for Crunchbase data."""
 
-    name: str | None
-    permalink: str | None
-    interaction_type: str | None
+    name: str | None = None
+    permalink: str | None = None
+    interaction_type: str | None = None
 
 
 class PersonModel(BaseModel):  # done
     """Person model for Crunchbase data."""
 
-    name: str | None
-    job_titles: list[str] | None
-    permalink: str | None
-    email: str | None
-    phone: str | None
-    linkedin: str | None
+    name: str | None = None
+    title: str | None = None
+    permalink: str | None = None
+    email: str | None = None
+    start_date: datetime | None = None
+    phone: str | None = None
+    linkedin: str | None = None
 
 
 class InvestorModel(BaseModel):  # done
     """Investor model for Crunchbase data."""
 
-    name: str | None
-    investment_title: str | None
-    permalink: str | None
-    partners: list[PersonModel] | None
+    name: str | None = None
+    investment_title: str | None = None
+    permalink: str | None = None
+    partners: list[PersonModel] | None = None
 
 
 class FundingRoundModel(BaseModel):  # done
     """Funding model for Crunchbase data."""
 
-    name: str | None
-    permalink: str | None
-    announced_on: datetime | None
-    money_raised_usd: int | None
-    num_investors: int | None
-    lead_investors: list[InvestorModel] | None
+    name: str | None = None
+    permalink: str | None = None
+    announced_on: datetime | None = None
+    money_raised_usd: int | None = None
+    num_investors: int | None = None
+    lead_investors: list[InvestorModel] | None = None
 
 
 class ProductModel(BaseModel):
     """Product model for Crunchbase data."""
 
-    name: str | None
-    created_at: datetime | None
+    name: str | None = None
+    created_at: datetime | None = None
 
 
 class SimilarCompanyModel(BaseModel):  # done
     """Similar Company model for Crunchbase data."""
 
-    name: str | None
-    permalink: str | None
-    description: str | None
-
-
-class TechnologyModel(BaseModel):  # done
-    """Technology model for Crunchbase data."""
-
-    name: str
-    category: str | None
-    num_of_company_using: int | None
+    name: str | None = None
+    permalink: str | None = None
+    description: str | None = None
 
 
 class WebsiteDataModel(BaseModel):
     """Website data model for Crunchbase data."""
 
-    visits_pct: float | None
-    rank_mom_pct: float | None
-    rank: int | None
-    location: str | None
+    visits_pct: float | None = None
+    rank_mom_pct: float | None = None
+    rank: int | None = None
+    location: str | None = None
 
 
 class CompanyModel(BaseModel):
     """Company model for Crunchbase data."""
 
     # general data
-    name: str | None
-    description: str | None
-    permalink: str | None
-    website: str | None
-    ipo_status: str | None
-    company_type: str | None
-    founded_on: datetime | None
-    categories: list[str] | None
-    legal_name: str | None
+    name: str | None = None
+    description: str | None = None
+    permalink: str | None = None
+    website: str | None = None
+    ipo_status: str | None = None
+    company_type: str | None = None
+    founded_on: datetime | None = None
+    categories: list[str] | None = None
+    legal_name: str | None = None
 
     # location data
-    location_city: str | None
-    location_region: str | None
-    location_country: str | None
+    location: dict[str, str] | None = None
 
     # employee and contact data
-    num_employees_enum: str | None
-    rank_org_company: int | None
+    num_employees_enum: str | None = None
+    rank_org_company: int | None = None
 
     # financial data
-    funding_rounds: list[FundingRoundModel] | None
-    total_funding_usd: int | None
-    last_funding_type: str | None
-    last_funding_at: datetime | None
-    num_funding_rounds: int | None
-    investors: list[InvestorModel] | None
-    num_investors: int | None
+    funding_rounds: list[FundingRoundModel] | None = None
+    total_funding_usd: int | None = None
+    last_funding_type: str | None = None
+    last_funding_at: datetime | None = None
+    num_funding_rounds: int | None = None
+    investors: list[InvestorModel] | None = None
+    num_investors: int | None = None
 
     # acquisition data
-    acquirers: list[AcquirerModel] | None
-    num_acquirers: int | None
-    acquirees: list[AcquireeModel] | None
-    num_acquirees: int | None
+    acquirer: AcquirerModel | None = None
+    num_acquirers: int | None = None
+    acquirees: list[AcquireeModel] | None = None
+    num_acquirees: int | None = None
 
     # technology stats by builtwith
-    technologies: list[TechnologyModel] | None
-    num_technologies: int | None
+    num_technologies: int | None = None
 
     # app data by apptopia
-    apptopa_total_apps: int | None
-    apptopia_total_downloads: int | None
+    apptopa_total_apps: int | None = None
+    apptopia_total_downloads: int | None = None
 
     # contact data
-    email: str | None
-    phone: str | None
-    num_contact_email: int | None
-    num_contact_phone: int | None
-    num_contact: int | None
-    contacts: list[PersonModel] | None
+    email: str | None = None
+    phone: str | None = None
+    num_contact_email: int | None = None
+    num_contact_phone: int | None = None
+    num_contact: int | None = None
 
     # similar company data
-    similar_companies: list[SimilarCompanyModel] | None
-    num_similar_companies: int | None
-
+    similar_companies: list[SimilarCompanyModel] | None = None
+    num_similar_companies: int | None = None
     # employee data
-    employees: list[PersonModel] | None
-    num_current_positions: int | None
+    featured_employees: list[PersonModel] | None = None
+    num_current_positions: int | None = None
 
     # event data
-    num_event_appearances: int | None
-    events: list[EventModel] | None
+    num_event_appearances: int | None = None
+    events: list[EventModel] | None = None
 
     # patent and trademark data by ipqwery
-    num_patents: int | None
-    num_trademarks: int | None
-    popular_trademark_classes: str | None
+    num_patents: int | None = None
+    num_trademarks: int | None = None
+    popular_trademark_classes: str | None = None
 
     # activity news data
-    activities: list[ActivityModel] | None
-    num_activity: int | None
+    activities: list[ActivityModel] | None = None
+    num_activity: int | None = None
 
     # website stats by semrush
-    semrush_rank: int | None
-    semrush_visits_last_month: int | None
-    semrush_visits_mom_pct: float | None
-    country_data: list[WebsiteDataModel] | None
+    semrush_rank: int | None = None
+    semrush_visits_last_month: int | None = None
+    semrush_visits_mom_pct: float | None = None
+    country_data: list[WebsiteDataModel] | None = None
 
     # social media data
-    social_media: dict[str, str] | None
+    social_media: dict[str, str] | None = None
 
     # extra data
-    growth_insight: str | None
-    sifter_num_products: int | None
+    growth_insight: str | None = None
+    siftery_num_products: int | None = None
 
     def updated_model_dump(self) -> str:
         """Dump the CompanyModel instance to a JSON string."""
