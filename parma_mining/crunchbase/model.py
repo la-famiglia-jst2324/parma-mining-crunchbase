@@ -216,8 +216,9 @@ class FinalDiscoveryResponse(BaseModel):
 
 
 class CompaniesRequest(BaseModel):
-    """Companies request model for Crunchbase data."""
+    """Base model for the companies request."""
 
+    task_id: int
     companies: dict[str, dict[str, list[str]]]
 
 

@@ -124,7 +124,6 @@ def get_company_info(body: CompaniesRequest, token: str = Depends(authenticate))
                             org_details = crunchbase_client.get_company_details(
                                 [handle]
                             )
-                            print(org_details)
                         else:
                             logger.error(f"Not a valid Crunchbase url: {handle}")
                     except CrawlingError as e:
