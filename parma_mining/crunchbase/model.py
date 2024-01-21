@@ -137,7 +137,6 @@ class CompanyModel(BaseModel):
 
     # acquisition data
     acquirer: AcquirerModel | None = None
-    num_acquirers: int | None = None
     acquirees: list[AcquireeModel] | None = None
     num_acquirees: int | None = None
 
@@ -169,7 +168,7 @@ class CompanyModel(BaseModel):
     # patent and trademark data by ipqwery
     num_patents: int | None = None
     num_trademarks: int | None = None
-    popular_trademark_classes: str | None = None
+    popular_trademark_class: str | None = None
 
     # activity news data
     activities: list[ActivityModel] | None = None
