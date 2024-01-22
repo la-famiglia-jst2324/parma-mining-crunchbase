@@ -12,10 +12,15 @@ dependencies:
   - setuptools >=61 # pyproject.toml support
   # Development
   - types-pyyaml
+  - python-dotenv>=1.0.0
+  - pip:
+      - apify-client
+      - googlesearch-python
   # Testing
   - pytest >=6 # --import-mode option
   - pytest-cov
   - httpx
+  - pytest-mock
   # Dependencies (core)
   - fastapi >=0.104.0
   - polars >=0.19.0
