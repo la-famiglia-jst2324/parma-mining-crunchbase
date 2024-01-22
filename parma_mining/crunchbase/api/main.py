@@ -118,7 +118,7 @@ def get_company_info(body: CompaniesRequest, token: str = Depends(authenticate))
     for company_id, company_data in body.companies.items():
         for data_type, handles in company_data.items():
             for handle in handles:
-                if data_type == "url":
+                if data_type == "urls":
                     try:
                         if "crunchbase.com/" in handle:
                             org_details = crunchbase_client.get_company_details(
