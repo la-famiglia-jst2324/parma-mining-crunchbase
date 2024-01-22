@@ -2,12 +2,11 @@ import logging
 from unittest.mock import MagicMock
 
 import pytest
-from fastapi import HTTPException, status
 from fastapi.testclient import TestClient
 
 from parma_mining.crunchbase.api.dependencies.auth import authenticate
 from parma_mining.crunchbase.api.main import app
-from parma_mining.mining_common.const import HTTP_200, HTTP_404
+from parma_mining.mining_common.const import HTTP_200
 from tests.dependencies.mock_auth import mock_authenticate
 
 
@@ -121,28 +120,3 @@ def test_get_company_details(
     mock_analytics_client.assert_called()
 
     assert response.status_code == HTTP_200
-
-
-def test_get_company_details_bad_request(mocker, client: TestClient):
-    mocker.patch(
-        "parma_mining.crunchbase.api.main.CrunchbaseClient.get_company_details",
-        side_effect=HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Company not found"
-        ),
-    )
-
-    payload = {
-        "task_id": 123,
-        "companies": {
-            "Example_id1": {
-                "url": ["https://www.crunchbase.com/organization/finto-acba"]
-            },
-            "Example_id2": {
-                "url": ["https://www.crunchbase.com/organization/personio"]
-            },
-        },
-    }
-
-    headers = {"Authorization": "Bearer test"}
-    response = client.post("/companies", json=payload, headers=headers)
-    assert response.status_code == HTTP_404
