@@ -45,7 +45,7 @@ class CrunchbaseClient:
         """
         search_query = query + " crunchbase"
         preferred_slash_count = 4
-        handles = []
+        urls = []
         try:
             for search_item in search(
                 search_query, tld="co.in", num=10, stop=10, pause=2
@@ -54,10 +54,10 @@ class CrunchbaseClient:
                     search_item.count("/") == preferred_slash_count
                     and "https://www.crunchbase.com/organization/" in search_item
                 ):
-                    handles.append(search_item)
-            if len(handles) == 0:
+                    urls.append(search_item)
+            if len(urls) == 0:
                 raise Exception("No Crunchbase profile url found with given query")
-            return DiscoveryResponse.model_validate({"handles": handles})
+            return DiscoveryResponse.model_validate({"urls": urls})
         except Exception as e:
             msg = f"Error searching organizations for {query}: {e}"
             logger.error(msg)

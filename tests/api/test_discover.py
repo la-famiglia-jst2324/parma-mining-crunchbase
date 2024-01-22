@@ -28,7 +28,7 @@ def mock_crunchbase_client(mocker) -> MagicMock:
     mock = mocker.patch(
         "parma_mining.crunchbase.api.main.CrunchbaseClient.discover_company"
     )
-    mock.return_value = DiscoveryResponse(handles=["mock_handle"]).model_dump()
+    mock.return_value = DiscoveryResponse(urls=["mock_url"]).model_dump()
     return mock
 
 
@@ -75,7 +75,7 @@ def test_discover_non_existing_company(
 
     assert response.status_code == HTTP_200
     response_data = response.json()
-    assert response_data["identifiers"]["999"] == {"handles": []}
+    assert response_data["identifiers"]["999"] == {"urls": []}
 
 
 def test_discover_endpoint_with_crunchbase_client_error(

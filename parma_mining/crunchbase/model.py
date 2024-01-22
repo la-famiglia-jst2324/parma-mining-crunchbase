@@ -205,7 +205,7 @@ class DiscoveryRequest(BaseModel):
 class DiscoveryResponse(BaseModel):
     """Define the output model for the discovery endpoint."""
 
-    handles: list[str] = []
+    urls: list[str] = []
 
 
 class FinalDiscoveryResponse(BaseModel):

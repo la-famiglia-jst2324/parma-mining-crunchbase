@@ -22,9 +22,8 @@ def test_discover_company_success(mock_search, mock_crunchbase_client):
 
     results = mock_crunchbase_client.discover_company("Test")
     assert isinstance(results, DiscoveryResponse)
-    print(results.handles)
-    assert len(results.handles) == 1
-    assert results.handles[0] == "https://www.crunchbase.com/organization/test"
+    assert len(results.urls) == 1
+    assert results.urls[0] == "https://www.crunchbase.com/organization/test"
 
 
 @patch("parma_mining.crunchbase.client.search")
