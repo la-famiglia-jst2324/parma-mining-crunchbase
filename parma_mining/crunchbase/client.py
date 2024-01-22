@@ -63,7 +63,7 @@ class CrunchbaseClient:
             logger.error(msg)
             raise ClientError()
 
-    def get_company_details(self, urls: list[str]) -> list[CompanyModel]:
+    def get_company_details(self, urls: list[str]) -> CompanyModel:
         """Scrape a company for details."""
         # Initialize the ApifyClient with your API token
         client = ApifyClient(self.key)
@@ -81,108 +81,120 @@ class CrunchbaseClient:
         }
 
         # Run the Actor and wait for it to finish
-        run = client.actor(self.actor_id).call(run_input=run_input)
+        try:
+            run = client.actor(self.actor_id).call(run_input=run_input)
 
-        # Get output of the Actor run
-        for item in client.dataset(run["defaultDatasetId"]).iterate_items():
-            company = {
-                "name": item["identifier"]["value"],
-                "description": item["short_description"],
-                "permalink": item["identifier"]["permalink"],
-                "website": item["website"]["value"],
-                "ipo_status": item["ipo_status"],
-                "company_type": item["overview_company_fields"]["company_type"],
-                "founded_on": datetime.strptime(
-                    item["overview_fields_extended"]["founded_on"]["value"], "%Y-%m-%d"
-                ),
-                "legal_name": item["overview_fields_extended"]["legal_name"],
-                "num_employees_enum": item["num_employees_enum"],
-                "rank_org_company": item["rank_org_company"],
-                "total_funding_usd": item["funding_total"]["value_usd"],
-                "last_funding_type": item["last_funding_type"],
-                "last_funding_at": datetime.strptime(
-                    item["funding_rounds_summary"]["last_funding_at"], "%Y-%m-%d"
-                ),
-                "num_funding_rounds": item["funding_rounds_summary"][
-                    "num_funding_rounds"
-                ],
-                "num_investors": item["investors_summary"]["num_investors"],
-                "num_technologies": item["technology_highlights"][
-                    "builtwith_num_technologies_used"
-                ],
-                "apptopa_total_apps": item["apptopia_summary"]["apptopia_total_apps"]
-                if "apptopia_total_apps" in item["apptopia_summary"]
-                else None,
-                "apptopia_total_downloads": item["apptopia_summary"][
-                    "apptopia_total_downloads"
-                ]
-                if "apptopia_total_downloads" in item["apptopia_summary"]
-                else None,
-                "email": item["contact_fields"]["contact_email"]
-                if "contact_email" in item["contact_fields"]
-                else None,
-                "phone": item["contact_fields"]["phone_number"]
-                if "phone_number" in item["contact_fields"]
-                else None,
-                "num_similar_companies": item["company_overview_highlights"][
-                    "num_org_similarities"
-                ],
-                "num_current_positions": item["people_highlights"][
-                    "num_current_positions"
-                ],
-                "num_event_appearances": item["event_appearances_summary"][
-                    "num_event_appearances"
-                ]
-                if "num_event_appearances" in item["event_appearances_summary"]
-                else None,
-                "num_patents": item["ipqwery_summary"]["ipqwery_num_patent_granted"],
-                "num_trademarks": item["ipqwery_summary"][
-                    "ipqwery_num_trademark_registered"
-                ],
-                "popular_trademark_class": item["ipqwery_summary"][
-                    "ipqwery_popular_trademark_class"
-                ],
-                "num_activity": item["overview_timeline"]["count"],
-                "semrush_rank": item["semrush_summary"]["semrush_global_rank"],
-                "semrush_visits_last_month": item["semrush_summary"][
-                    "semrush_visits_latest_month"
-                ],
-                "semrush_visits_mom_pct": item["semrush_rank_headline"][
-                    "semrush_visits_mom_pct"
-                ],
-                "siftery_num_products": item["siftery_summary"]["siftery_num_products"]
-                if "siftery_num_products" in item["siftery_summary"]
-                else None,
-            }
+            # Get output of the Actor run
+            for item in client.dataset(run["defaultDatasetId"]).iterate_items():
+                company = {
+                    "name": item["identifier"]["value"],
+                    "description": item["short_description"],
+                    "permalink": item["identifier"]["permalink"],
+                    "website": item["website"]["value"],
+                    "ipo_status": item["ipo_status"],
+                    "company_type": item["overview_company_fields"]["company_type"],
+                    "founded_on": datetime.strptime(
+                        item["overview_fields_extended"]["founded_on"]["value"],
+                        "%Y-%m-%d",
+                    ),
+                    "legal_name": item["overview_fields_extended"]["legal_name"],
+                    "num_employees_enum": item["num_employees_enum"],
+                    "rank_org_company": item["rank_org_company"],
+                    "total_funding_usd": item["funding_total"]["value_usd"],
+                    "last_funding_type": item["last_funding_type"],
+                    "last_funding_at": datetime.strptime(
+                        item["funding_rounds_summary"]["last_funding_at"], "%Y-%m-%d"
+                    ),
+                    "num_funding_rounds": item["funding_rounds_summary"][
+                        "num_funding_rounds"
+                    ],
+                    "num_investors": item["investors_summary"]["num_investors"],
+                    "num_technologies": item["technology_highlights"][
+                        "builtwith_num_technologies_used"
+                    ],
+                    "apptopa_total_apps": item["apptopia_summary"][
+                        "apptopia_total_apps"
+                    ]
+                    if "apptopia_total_apps" in item["apptopia_summary"]
+                    else None,
+                    "apptopia_total_downloads": item["apptopia_summary"][
+                        "apptopia_total_downloads"
+                    ]
+                    if "apptopia_total_downloads" in item["apptopia_summary"]
+                    else None,
+                    "email": item["contact_fields"]["contact_email"]
+                    if "contact_email" in item["contact_fields"]
+                    else None,
+                    "phone": item["contact_fields"]["phone_number"]
+                    if "phone_number" in item["contact_fields"]
+                    else None,
+                    "num_similar_companies": item["company_overview_highlights"][
+                        "num_org_similarities"
+                    ],
+                    "num_current_positions": item["people_highlights"][
+                        "num_current_positions"
+                    ],
+                    "num_event_appearances": item["event_appearances_summary"][
+                        "num_event_appearances"
+                    ]
+                    if "num_event_appearances" in item["event_appearances_summary"]
+                    else None,
+                    "num_patents": item["ipqwery_summary"][
+                        "ipqwery_num_patent_granted"
+                    ],
+                    "num_trademarks": item["ipqwery_summary"][
+                        "ipqwery_num_trademark_registered"
+                    ],
+                    "popular_trademark_class": item["ipqwery_summary"][
+                        "ipqwery_popular_trademark_class"
+                    ],
+                    "num_activity": item["overview_timeline"]["count"],
+                    "semrush_rank": item["semrush_summary"]["semrush_global_rank"],
+                    "semrush_visits_last_month": item["semrush_summary"][
+                        "semrush_visits_latest_month"
+                    ],
+                    "semrush_visits_mom_pct": item["semrush_rank_headline"][
+                        "semrush_visits_mom_pct"
+                    ],
+                    "siftery_num_products": item["siftery_summary"][
+                        "siftery_num_products"
+                    ]
+                    if "siftery_num_products" in item["siftery_summary"]
+                    else None,
+                }
 
-        # categories
-        company["categories"] = self.extract_categories(item)
-        # location
-        company["location"] = self.extract_location(item)
-        # funding_rounds
-        company["funding_rounds"] = self.extract_funding_rounds(item)
-        # investors
-        company["investors"] = self.extract_investors(item)
-        # acquirees
-        company["acquirees"] = self.extract_acquirees(item)
-        # acquirers
-        company["acquirer"] = self.extract_acquirers(item)
-        # similar_companies
-        company["similar_companies"] = self.extract_similar_companies(item)
-        # employees
-        company["featured_employees"] = self.extract_featured_employees(item)
-        # events
-        company["events"] = self.extract_events(item)
-        # activities
-        company["activities"] = self.extract_activities(item)
-        # country_data
-        company["country_data"] = self.extract_country_data(item)
-        # social_media
-        company["social_media"] = self.extract_social_media(item)
-        # growth_insight
-        company["growth_insight"] = self.extract_growth_insight(item)
+            # categories
+            company["categories"] = self.extract_categories(item)
+            # location
+            company["location"] = self.extract_location(item)
+            # funding_rounds
+            company["funding_rounds"] = self.extract_funding_rounds(item)
+            # investors
+            company["investors"] = self.extract_investors(item)
+            # acquirees
+            company["acquirees"] = self.extract_acquirees(item)
+            # acquirers
+            company["acquirer"] = self.extract_acquirers(item)
+            # similar_companies
+            company["similar_companies"] = self.extract_similar_companies(item)
+            # employees
+            company["featured_employees"] = self.extract_featured_employees(item)
+            # events
+            company["events"] = self.extract_events(item)
+            # activities
+            company["activities"] = self.extract_activities(item)
+            # country_data
+            company["country_data"] = self.extract_country_data(item)
+            # social_media
+            company["social_media"] = self.extract_social_media(item)
+            # growth_insight
+            company["growth_insight"] = self.extract_growth_insight(item)
 
-        return CompanyModel.model_validate(company)
+            return CompanyModel.model_validate(company)
+
+        except Exception as e:
+            logger.error(f"Failed to scrape product page: {e}")
+            return CompanyModel()
 
     def extract_categories(self, item: dict) -> list[str]:
         """Extract categories from the item."""
