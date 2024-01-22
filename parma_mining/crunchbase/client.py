@@ -24,7 +24,7 @@ from parma_mining.crunchbase.model import (
     SimilarCompanyModel,
     WebsiteDataModel,
 )
-from parma_mining.mining_common.exceptions import ClientError
+from parma_mining.mining_common.exceptions import ClientError, CrawlingError
 
 logger = logging.getLogger(__name__)
 
@@ -193,8 +193,9 @@ class CrunchbaseClient:
             return CompanyModel.model_validate(company)
 
         except Exception as e:
-            logger.error(f"Failed to scrape product page: {e}")
-            return CompanyModel()
+            msg = f"Error scraping company details: {e}"
+            logger.error(msg)
+            raise CrawlingError(msg)
 
     def extract_categories(self, item: dict) -> list[str]:
         """Extract categories from the item."""
