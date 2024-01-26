@@ -73,7 +73,7 @@ class CrunchbaseNormalizationMap:
                 "MeasurementName": "number of funding rounds",
             },
             {
-                "last_funding_at": "date",
+                "SourceField": "last_funding_at",
                 "DataType": "date",
                 "MeasurementName": "company last funding date",
             },
@@ -186,6 +186,11 @@ class CrunchbaseNormalizationMap:
                 "SourceField": "siftery_num_products",
                 "DataType": "int",
                 "MeasurementName": "company number of products by siftery",
+            },
+            {
+                "SourceField": "categories",
+                "DataType": "text",
+                "MeasurementName": "categories of company",
             },
             {
                 "SourceField": "acquirees",
@@ -394,7 +399,7 @@ class CrunchbaseNormalizationMap:
                 ],
             },
             {
-                "SourceField": "SimilarCompanies",
+                "SourceField": "similar_companies",
                 "DataType": "nested",
                 "MeasurementName": "similar companies to company",
                 "NestedMappings": [
@@ -538,7 +543,6 @@ class CrunchbaseNormalizationMap:
                     },
                 ],
             },
-            # to be added later: Social media, categories, location
         ],
     }
 
