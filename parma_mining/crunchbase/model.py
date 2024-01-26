@@ -102,7 +102,6 @@ class WebsiteDataModel(BaseModel):
     visits_pct: float | None = None
     rank_mom_pct: float | None = None
     rank: int | None = None
-    location: str | None = None
 
 
 class CompanyModel(BaseModel):
@@ -144,7 +143,7 @@ class CompanyModel(BaseModel):
     num_technologies: int | None = None
 
     # app data by apptopia
-    apptopa_total_apps: int | None = None
+    apptopia_total_apps: int | None = None
     apptopia_total_downloads: int | None = None
 
     # contact data
@@ -179,9 +178,6 @@ class CompanyModel(BaseModel):
     semrush_visits_last_month: int | None = None
     semrush_visits_mom_pct: float | None = None
     country_data: list[WebsiteDataModel] | None = None
-
-    # social media data
-    social_media: dict[str, str] | None = None
 
     # extra data
     growth_insight: str | None = None

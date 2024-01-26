@@ -112,7 +112,7 @@ class CrunchbaseClient:
                     "num_technologies": item["technology_highlights"][
                         "builtwith_num_technologies_used"
                     ],
-                    "apptopa_total_apps": item["apptopia_summary"][
+                    "apptopia_total_apps": item["apptopia_summary"][
                         "apptopia_total_apps"
                     ]
                     if "apptopia_total_apps" in item["apptopia_summary"]
@@ -165,8 +165,6 @@ class CrunchbaseClient:
 
             # categories
             company["categories"] = self.extract_categories(item)
-            # location
-            company["location"] = self.extract_location(item)
             # funding_rounds
             company["funding_rounds"] = self.extract_funding_rounds(item)
             # investors
@@ -185,8 +183,6 @@ class CrunchbaseClient:
             company["activities"] = self.extract_activities(item)
             # country_data
             company["country_data"] = self.extract_country_data(item)
-            # social_media
-            company["social_media"] = self.extract_social_media(item)
             # growth_insight
             company["growth_insight"] = self.extract_growth_insight(item)
 
@@ -315,7 +311,9 @@ class CrunchbaseClient:
             acquisition = {
                 "title": acquiree["identifier"]["value"],
                 "permalink": acquiree["identifier"]["permalink"],
-                "date": datetime.strptime(acquiree["announced_on"], "%Y-%m-%d"),
+                "date": datetime.strptime(
+                    acquiree["announced_on"]["value"], "%Y-%m-%d"
+                ),
                 "price_usd": acquiree["price"]["value_usd"]
                 if "price" in acquiree
                 else None,
@@ -388,18 +386,21 @@ class CrunchbaseClient:
                 "title": activity["properties"]["identifier"]["value"],
                 "activity_type": activity["properties"]["identifier"]["entity_def_id"],
                 "author": activity["properties"]["activity_properties"]["author"]
-                if "author" in activity["properties"]["activity_properties"]
+                if "activity_properties" in activity["properties"]
+                and "author" in activity["properties"]["activity_properties"]
                 else None,
                 "publisher": activity["properties"]["activity_properties"]["publisher"]
-                if "publisher" in activity["properties"]["activity_properties"]
+                if "activity_properties" in activity["properties"]
+                and "publisher" in activity["properties"]["activity_properties"]
                 else None,
                 "date": datetime.strptime(
                     activity["properties"]["activity_date"], "%Y-%m-%d"
                 )
-                if "activity_date" in activity["properties"]["activity_properties"]
+                if "activity_date" in activity["properties"]
                 else None,
                 "url": activity["properties"]["activity_properties"]["url"]["value"]
-                if "url" in activity["properties"]["activity_properties"]
+                if "activity_properties" in activity["properties"]
+                and "url" in activity["properties"]["activity_properties"]
                 else None,
             }
             activities.append(ActivityModel.model_validate(result_activity))
