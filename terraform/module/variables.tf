@@ -26,3 +26,17 @@ variable "PARMA_SHARED_SECRET_KEY" {
   type        = string
   sensitive   = true
 }
+
+/* ----------------------------------- Crunchbase ----------------------------------- */
+
+variable "APIFY_ACTOR_ID" {
+  description = "Apify actor ID"
+  type        = string
+  sensitive   = false
+}
+
+variable "APIFY_API_KEY" {
+  description = "Apify API key"
+  type        = string
+  sensitive   = true
+}

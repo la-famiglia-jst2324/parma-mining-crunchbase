@@ -56,6 +56,14 @@ resource "google_cloud_run_service" "parma_mining_crunchbase_cloud_run" {
           name  = "DEPLOYMENT_ENV"
           value = var.env
         }
+        env {
+          name  = "APIFY_ACTOR_ID"
+          value = var.APIFY_ACTOR_ID
+        }
+        env {
+          name  = "APIFY_API_KEY"
+          value = var.APIFY_API_KEY
+        }
       }
     }
 
