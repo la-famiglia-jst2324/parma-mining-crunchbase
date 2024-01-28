@@ -97,30 +97,45 @@ class CrunchbaseClient:
             for item in client.dataset(run["defaultDatasetId"]).iterate_items():
                 company = {
                     "name": item["identifier"]["value"],
-                    "description": item["short_description"],
+                    "description": item["short_description"]
+                    if "short_description" in item
+                    else None,
                     "permalink": item["identifier"]["permalink"],
-                    "website": item["website"]["value"],
+                    "website": item["website"]["value"] if "website" in item else None,
                     "ipo_status": item["ipo_status"],
-                    "company_type": item["overview_company_fields"]["company_type"],
+                    "company_type": item["overview_company_fields"]["company_type"]
+                    if "company_type" in item["overview_company_fields"]
+                    else None,
                     "founded_on": datetime.strptime(
                         item["overview_fields_extended"]["founded_on"]["value"],
                         "%Y-%m-%d",
                     ),
-                    "legal_name": item["overview_fields_extended"]["legal_name"],
+                    "legal_name": item["overview_fields_extended"]["legal_name"]
+                    if "legal_name" in item["overview_fields_extended"]
+                    else None,
                     "num_employees_enum": item["num_employees_enum"],
                     "rank_org_company": item["rank_org_company"],
-                    "total_funding_usd": item["funding_total"]["value_usd"],
+                    "total_funding_usd": item["funding_total"]["value_usd"]
+                    if "value_usd" in item["funding_total"]
+                    else None,
                     "last_funding_type": item["last_funding_type"],
                     "last_funding_at": datetime.strptime(
                         item["funding_rounds_summary"]["last_funding_at"], "%Y-%m-%d"
-                    ),
+                    )
+                    if "last_funding_at" in item["funding_rounds_summary"]
+                    else None,
                     "num_funding_rounds": item["funding_rounds_summary"][
                         "num_funding_rounds"
-                    ],
+                    ]
+                    if "num_funding_rounds" in item["funding_rounds_summary"]
+                    else None,
                     "num_investors": item["investors_summary"]["num_investors"],
                     "num_technologies": item["technology_highlights"][
                         "builtwith_num_technologies_used"
-                    ],
+                    ]
+                    if "builtwith_num_technologies_used"
+                    in item["technology_highlights"]
+                    else None,
                     "apptopia_total_apps": item["apptopia_summary"][
                         "apptopia_total_apps"
                     ]
@@ -139,32 +154,48 @@ class CrunchbaseClient:
                     else None,
                     "num_similar_companies": item["company_overview_highlights"][
                         "num_org_similarities"
-                    ],
+                    ]
+                    if "num_org_similarities" in item["company_overview_highlights"]
+                    else None,
                     "num_current_positions": item["people_highlights"][
                         "num_current_positions"
-                    ],
+                    ]
+                    if "num_current_positions" in item["people_highlights"]
+                    else None,
                     "num_event_appearances": item["event_appearances_summary"][
                         "num_event_appearances"
                     ]
                     if "num_event_appearances" in item["event_appearances_summary"]
                     else None,
-                    "num_patents": item["ipqwery_summary"][
-                        "ipqwery_num_patent_granted"
-                    ],
+                    "num_patents": item["ipqwery_summary"]["ipqwery_num_patent_granted"]
+                    if "ipqwery_num_patent_granted" in item["ipqwery_summary"]
+                    else None,
                     "num_trademarks": item["ipqwery_summary"][
                         "ipqwery_num_trademark_registered"
-                    ],
+                    ]
+                    if "ipqwery_num_trademark_registered" in item["ipqwery_summary"]
+                    else None,
                     "popular_trademark_class": item["ipqwery_summary"][
                         "ipqwery_popular_trademark_class"
-                    ],
-                    "num_activity": item["overview_timeline"]["count"],
-                    "semrush_rank": item["semrush_summary"]["semrush_global_rank"],
+                    ]
+                    if "ipqwery_popular_trademark_class" in item["ipqwery_summary"]
+                    else None,
+                    "num_activity": item["overview_timeline"]["count"]
+                    if "count" in item["overview_timeline"]
+                    else None,
+                    "semrush_rank": item["semrush_summary"]["semrush_global_rank"]
+                    if "semrush_global_rank" in item["semrush_summary"]
+                    else None,
                     "semrush_visits_last_month": item["semrush_summary"][
                         "semrush_visits_latest_month"
-                    ],
+                    ]
+                    if "semrush_visits_latest_month" in item["semrush_summary"]
+                    else None,
                     "semrush_visits_mom_pct": item["semrush_rank_headline"][
                         "semrush_visits_mom_pct"
-                    ],
+                    ]
+                    if "semrush_visits_mom_pct" in item["semrush_rank_headline"]
+                    else None,
                     "siftery_num_products": item["siftery_summary"][
                         "siftery_num_products"
                     ]
