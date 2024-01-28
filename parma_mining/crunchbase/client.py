@@ -47,7 +47,18 @@ class CrunchbaseClient:
         preferred_slash_count = 4
         urls = []
         try:
-            for search_item in search(search_query, tld="de", num=10, stop=5, pause=10):
+            user_agent = (
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                "(KHTML, like Gecko) Chrome/100.0.0.0 Safari/537.36"
+            )
+            for search_item in search(
+                search_query,
+                tld="co.in",
+                num=10,
+                stop=5,
+                pause=5,
+                user_agent=user_agent,
+            ):
                 if (
                     search_item.count("/") == preferred_slash_count
                     and "https://www.crunchbase.com/organization/" in search_item
