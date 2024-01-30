@@ -78,7 +78,7 @@ The following steps will get you started with the project.
 
 ```bash
 .
-├── parma_mining.crunchbasel: Main sourcing code
+├── parma_mining.crunchbase: Main sourcing code
 │   └── api: FastAPI REST API
 │   └── mining_common: Collection of common classes to be used in the repo.
 ├─ tests: Tests for mining module
